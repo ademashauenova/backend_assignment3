@@ -76,7 +76,6 @@
 
                 $.ajax({
                     url: '/main',
-                    // url: `/weather?cityName=${cityName}`,
                     method: 'POST',
                     data: { cityName: cityName },
                     success: function(data) {
@@ -124,9 +123,14 @@
                             <li>
                                 <strong>City Name:</strong> ${entry.cityName} <br>
                                 <strong>Temperature:</strong> ${entry.temp} C <br>
+                                <strong>Description:</strong> ${entry.weatherdescription} <br>
                                 <strong>Feels Like:</strong> ${entry.feelsLike} C <br>
                                 <strong>Humidity:</strong> ${entry.humidity} % <br>
-                                <!-- Add more fields as needed -->
+                                <strong>Pressure:</strong> ${entry.pressure} mb <br>
+                                <strong>Windspeed:</strong> ${entry.windSpeed} m/s <br>
+                                <strong>Coordinates:</strong> ${entry.coordinates.lat}, ${entry.coordinates.lon} <br>
+                                <strong>Country Code:</strong> ${entry.countryCode} <br>
+                                <strong>Rain Volume:</strong> ${entry.rainVolume} mm<br>
                                 <strong>Timestamp:</strong> ${entry.timestamp}
                             </li>
                         `);
@@ -152,9 +156,14 @@
                             <li>
                                 <strong>City Name:</strong> ${entry.cityName} <br>
                                 <strong>Temperature:</strong> ${entry.temp} C <br>
+                                <strong>Description:</strong> ${entry.weatherdescription} <br>
                                 <strong>Feels Like:</strong> ${entry.feelsLike} C <br>
                                 <strong>Humidity:</strong> ${entry.humidity} % <br>
-                                <!-- Add more fields as needed -->
+                                <strong>Pressure:</strong> ${entry.pressure} mb <br>
+                                <strong>Windspeed:</strong> ${entry.windSpeed} m/s <br>
+                                <strong>Coordinates:</strong> ${entry.coordinates.lat}, ${entry.coordinates.lon} <br>
+                                <strong>Country Code:</strong> ${entry.countryCode} <br>
+                                <strong>Rain Volume:</strong> ${entry.rainVolume} mm <br>
                                 <strong>Timestamp:</strong> ${entry.timestamp}
                             </li>
                         `);
