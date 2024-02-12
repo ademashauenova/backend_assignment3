@@ -1,0 +1,74 @@
+<!-- views/history.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Search History</title>
+  <!-- Add any additional styling or libraries you need -->
+</head>
+<body>
+
+  <h1>Weather Search History</h1>
+
+  <% if (history.length === 0) { %>
+    <p>No weather searches found.</p>
+  <% } else { %>
+    <table>
+      <thead>
+        <tr>
+          <th>City Name</th>
+          <th>Temperature</th>
+          <th>Feels Like</th>
+          <!-- Add other headers as needed -->
+          <th>Timestamp</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% history.forEach(entry => { %>
+          <tr>
+            <td><%= entry.cityName %></td>
+            <td><%= entry.temp %>°C</td>
+            <td><%= entry.feelsLike %>°C</td>
+            <!-- Add other columns as needed -->
+            <td><%= new Date(entry.timestamp).toLocaleString() %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  <% } %>
+
+</body>
+</html>
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather History</title>
+</head>
+<body>
+
+    <% if (userWeatherHistory.weatherData.length > 0) { %>
+      <ul>
+        <% weatherData.forEach(data => { %>
+          <li>
+            <p>City: <%= data.cityName %></p>
+            <p>Temperature: <%= data.temp %> C</p>
+            <p>Feels Like: <%= data.feelsLike %> C</p>
+            <p>Timestamp: <%= data.timestamp %></p>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <p>No weather data available</p>
+    <% } %>
+</body>
+</html> -->
+
+

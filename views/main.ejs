@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="main_styles.css">
+    <title>Weather App</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="navbar-brand mb-0 h1 pl-4">APIs</div>
+        <button class="navbar-toggler justify-content-end" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item mx-3">
+                    <a class="nav-link active" href="/main">Weather</a>
+                </li>
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="/bestsellers">Book Bestsellers</a>
+                </li>
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="/museum">Rijksmuseum</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <form id="weatherForm" method="post" class="mt-5">
+        <input type="text" id="cityName" name="cityName" placeholder="Enter city name" required>
+        <button type="submit">Get Weather</button>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#historyModal">View Search History</button>
+    </form>
+
+    <div id="weatherContainer">
+        <div class="left-panel">
+        </div>
+        <div class="right-panel">
+        </div>
+    </div>
+
+    <div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="historyModalLabel">Weather Search History</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul id="historyList"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-5 text-center">
+        <p>Shauenova Adema SE-2204</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+            $('#weatherForm').submit(function(event) {
+                event.preventDefault();
+
+                const cityName = $('#cityName').val();
+
+                if (!cityName) {
+                    alert('CityName is required');
+                    return;
+                }
+
+                $.ajax({
+                    url: '/main',
+                    // url: `/weather?cityName=${cityName}`,
+                    method: 'POST',
+                    data: { cityName: cityName },
+                    success: function(data) {
+                        const weatherContainer = $('#weatherContainer');
+                        weatherContainer.html(`
+                            <div class="left-panel">
+                                <div class="weather-card">
+                                    <img src="${data.imageURL}" alt="Weather icon" class="weather-icon">
+                                    <p></p>
+                                    <h3>Temperature in ${cityName} is ${data.temp} C</h3>
+                                    <h5>Feels like ${data.feelsLike} C</h5>
+                                    <h5>The weather is currently ${data.weatherdescription}</h5>
+                                    <h5>Humidity: ${data.humidity} %</h5>
+                                    <h5>Pressure: ${data.pressure} mb</h5>
+                                    <h5>Wind speed: ${data.windSpeed} m/s</h5>
+                                    <h5>Coordinates: Lat ${data.coordinates.lat}, Lon ${data.coordinates.lon}</h5>
+                                    <h5>Country code: ${data.countryCode}</h5>
+                                    <h5>Rain volume: ${data.rainVolume} mm</h5>
+                                </div>
+                            </div>
+                            <div class="right-panel">
+                                <iframe width="800" height="800" frameborder="0" style="border:0" src="${data.mapUrl}" allowfullscreen></iframe>
+                            </div>
+                        `);
+
+                        const containerHeight = weatherContainer.outerHeight();
+                        $('html, body').animate({ scrollTop: 0 }, 'slow');
+                    },
+                    error: function() {
+                        alert('Error fetching weather data');
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function() {
+            $.ajax({
+                url: '/history',
+                method: 'GET',
+                success: function(historyData) {
+                    const historyList = $('#historyList');
+                    const reversedHistoryData = historyData.reverse();
+                    reversedHistoryData.forEach(function(entry) {
+                        historyList.append(`
+                            <li>
+                                <strong>City Name:</strong> ${entry.cityName} <br>
+                                <strong>Temperature:</strong> ${entry.temp} C <br>
+                                <strong>Feels Like:</strong> ${entry.feelsLike} C <br>
+                                <strong>Humidity:</strong> ${entry.humidity} % <br>
+                                <!-- Add more fields as needed -->
+                                <strong>Timestamp:</strong> ${entry.timestamp}
+                            </li>
+                        `);
+                    });
+                },
+                error: function() {
+                    alert('Error fetching weather data history');
+                }
+            });
+        });
+
+        function updateSearchHistory() {
+            $.ajax({
+                url: '/history',
+                method: 'GET',
+                success: function(historyData) {
+                    const reversedHistoryData = historyData.reverse();
+                    const historyList = $('#historyList');
+                    historyList.empty();
+
+                    reversedHistoryData.forEach(function(entry) {
+                        historyList.append(`
+                            <li>
+                                <strong>City Name:</strong> ${entry.cityName} <br>
+                                <strong>Temperature:</strong> ${entry.temp} C <br>
+                                <strong>Feels Like:</strong> ${entry.feelsLike} C <br>
+                                <strong>Humidity:</strong> ${entry.humidity} % <br>
+                                <!-- Add more fields as needed -->
+                                <strong>Timestamp:</strong> ${entry.timestamp}
+                            </li>
+                        `);
+                    });
+                },
+                error: function() {
+                    alert('Error fetching weather data history');
+                }
+            });
+        }
+
+        setInterval(updateSearchHistory, 5000);
+
+        $(document).ready(function() {
+            updateSearchHistory();
+        });
+    </script>
+</body>
+</html>
