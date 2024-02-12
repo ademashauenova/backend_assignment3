@@ -59,21 +59,9 @@ const User = mongoose.model('User', userSchema);
 
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
-app.use(session({ secret: 'your-secret-key', resave: true, saveUninitialized: true }));
+app.use(session({ secret: 'secret-key', resave: true, saveUninitialized: true }));
 
 app.set('view engine', 'ejs');
-
-
-// const isAdmin = (req, res, next) => {
-//     const adminUsername = "adema";
-//     const adminPassword = "pass";
-  
-//     if (req.session.user && req.session.user.username === adminUsername && req.session.user.password === adminPassword) {
-//       next();
-//     } else {
-//       res.redirect('/');
-//     }
-// };
 
 app.get('/', (req, res) => {
   res.render('login');
@@ -194,7 +182,6 @@ app.post('/main', async function (req, res) {
       response.on('end', async function () {
           try {
               const weatherdata = JSON.parse(rawData);
-              const weatherData = JSON.parse(rawData);
 
               const temp = weatherdata.main.temp;
               const feelsLike = weatherdata.main.feels_like;
